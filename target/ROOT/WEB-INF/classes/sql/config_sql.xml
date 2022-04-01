@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.ConfigMapper">
+ <select id="apiList" resultType="com.our.project.vo.ConfigApi" >
+        SELECT *
+          FROM API_CONFIG
+ </select>	
+ 
+ 
+ <insert id="create" parameterType="com.our.project.vo.ConfigApi">
+ 	<selectKey keyProperty="seq" resultType="int" order="BEFORE"> SELECT ifnull(max(seq)+1,0) from API_CONFIG</selectKey>
+
+ 	insert into API_CONFIG(seq,apiId,name,type,serviceKey,url,tableNm,created,apiType)
+ 	values  (#{seq},#{apiId}, #{name},#{type},#{serviceKey},#{url},#{tableNm},now(),#{apiType})
+ </insert> 
+ 
+ 
+	<update id="update" parameterType="com.our.project.vo.ConfigApi">
+	<![CDATA[
+		UPDATE API_CONFIG SET
+			name = #{name}
+			,type = #{type}
+			,serviceKey = #{serviceKey}
+			,tableNm = #{tableNm}
+	
+		WHERE SEQ = #{seq}
+	]]>
+	</update>
+
+ <insert id="createAttr" parameterType="com.our.project.vo.ApiAttr">
+ 	insert into API_CONFIG_ATTR(apiId,paramId,paramValue)
+ 	values  (#{apiId}, #{paramId},#{paramValue})
+ </insert> 	
+ 
+  <delete id="deleteAttr" parameterType="String">
+  delete from API_CONFIG_ATTR where apiId= #{apiId}
+
+ </delete> 	
+ 
+<select id="createDdl" parameterType="String" >
+${sql} 
+</select>
+
+ <select id="insertSql" parameterType="String">
+${insertSql} 
+ </select> 
+
+<select id="readTable" parameterType="hashmap" resultType="hashmap">
+select ${contId} from ${contTable} 
+</select> 
+
+<select id="checkTable" parameterType="String" resultType="int">
+SELECT ifnull(count(TABLE_NAME),0) FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME=#{tableNm} 
+</select> 
+
+<select id="checkColumn" parameterType="hashmap" resultType="int">
+SELECT ifnull(count(TABLE_NAME),0) FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=#{tableNm} and column_name=#{colNm}
+</select> 
+
+<select id="retrieve" parameterType="String" resultType="com.our.project.vo.ConfigApi">
+select * from API_CONFIG where apiId=#{apiId}
+</select> 
+
+
+<select id="retrieveAttr" parameterType="String" resultType="hashmap">
+select * from API_CONFIG_ATTR where apiId=#{apiId}
+</select> 
+</mapper>

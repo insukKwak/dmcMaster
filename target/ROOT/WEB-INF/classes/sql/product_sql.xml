@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.ProductMapper">
+
+
+
+	<select id="list" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			*
+		FROM dmc_prdt_cost_item
+	]]>
+	
+	</select>
+	
+	<select id="select" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			CODE
+			,TITLE
+			,RANKING_CODE
+			,UPPER_CODE
+			,CREATED
+		FROM dmc_prdt_cost_item
+		where  CODE = #{code}
+	]]>
+	
+	</select>
+	
+	<select id="cnt" resultType="hashmap"  parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			count(code) as cnt
+		FROM dmc_prdt_cost_item
+		where  CODE = #{code}
+	]]>
+	
+	</select>
+
+	
+	<insert id="create" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO dmc_prdt_cost_item( 
+			CODE
+			,TITLE
+			,RANKING_CODE
+			,UPPER_CODE
+			,CREATED
+		)VALUES(
+			#{code}
+			,#{title}	
+			,#{ranking_code}
+			,#{upper_code}		
+			,sysdate
+		)
+	]]>
+	</insert>
+	
+	<update id="update" parameterType="hashmap">
+	<![CDATA[
+		UPDATE dmc_prdt_cost_item SET
+			TITLE = #{title}
+			,RANKING_CODE =#{ranking_code}
+			,UPPER_CODE = #{upper_code}
+			,MODIFIED = sysdate
+		where CODE = #{code}
+	]]>
+	</update>
+	
+	<delete id="delete" parameterType="hashmap">
+	<![CDATA[
+		DELETE  from dmc_prdt_cost_item
+		WHERE CODE = #{code}
+	]]>
+	</delete>
+	
+	<select id="depthList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		
+		select '해당없음' as title , '0' as code from dual
+		union 
+		select title, code from DMC_PRDT_COST_ITEM 
+				where  upper_code ='0'
+	]]>
+	
+	</select>
+	
+	<select id="custList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			*
+		FROM dmc_prdt_cust
+	]]>
+	
+	</select>
+	
+	<select id="custSelect" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			NAME , 
+			CUST_TYPE , 
+			CUST_NUM  , 
+			REG_NUM  , 
+			BIZ_NAME  , 
+			INDUST_NAME , 
+			EVENT , 
+			BANK_CODE , 
+			ACCOUNT_NUM  , 
+			MNG_NAME , 
+			TEL_NO , 
+			PHONE_NO, 
+			FAX_NO , 
+			ADDR_1 , 
+			ADDR_2 , 
+			ADDR_3 , 
+			CAST_CLASS_CODE , 
+			REG_NAME  
+		FROM dmc_prdt_cust
+		where  CODE = #{code}
+	]]>
+	
+	</select>
+	
+	<select id="custCnt" resultType="hashmap"  parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			count(seq) as cnt
+		FROM dmc_prdt_cust
+		where  SEQ = #{seq}
+	]]>
+	
+	</select>
+
+	
+	<insert id="custCreate" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO dmc_prdt_cust( 
+			SEQ,
+			NAME , 
+			CUST_TYPE , 
+			CUST_NUM  , 
+			REG_NUM  , 
+			BIZ_NAME  , 
+			INDUST_NAME , 
+			EVENT , 
+			BANK_CODE , 
+			ACCOUNT_NUM  , 
+			MNG_NAME , 
+			TEL_NO , 
+			PHONE_NO, 
+			FAX_NO , 
+			ADDR_1 , 
+			ADDR_2 , 
+			ADDR_3 , 
+			CAST_CLASS_CODE , 
+			REG_NAME ,
+			CREATED
+		)VALUES(
+			CUST_SEQ.NEXTVAL
+			,#{name}
+			,#{cust_type}	
+			,#{cust_num}
+			,#{reg_num}
+			,#{biz_name}	
+			,#{indust_name}
+			,#{event}
+			,#{bank_code}	
+			,#{account_num}
+			,#{mng_name}
+			,#{tel_no}	
+			,#{phone_no}
+			,#{fax_no}	
+			,#{addr_1}	
+			,#{addr_2}
+			,#{addr_3}
+			,#{cast_class_code}
+			,#{reg_name}			
+			,sysdate
+		)
+	]]>
+	</insert>
+	
+	<update id="custUpdate" parameterType="hashmap">
+	<![CDATA[
+		UPDATE dmc_prdt_cust SET
+			NAME =#{name}, 
+			CUST_TYPE = #{cust_type}, 
+			CUST_NUM =#{cust_num} , 
+			REG_NUM =#{reg_num} , 
+			BIZ_NAME =#{biz_name}  , 
+			INDUST_NAME =#{indust_name}, 
+			EVENT =#{event}, 
+			BANK_CODE=#{bank_code} , 
+			ACCOUNT_NUM =#{account_num} , 
+			MNG_NAME =#{mng_name} , 
+			TEL_NO =#{tel_no} , 
+			PHONE_NO =#{phone_no}, 
+			FAX_NO =#{fax_no}, 
+			ADDR_1 =#{addr_1} , 
+			ADDR_2 #{addr_2} , 
+			ADDR_3=#{addr_3} , 
+			CAST_CLASS_CODE =#{cast_class_code}, 
+			REG_NAME  =#{reg_name}
+		where SEQ = #{seq}
+	]]>
+	</update>
+	
+	<delete id="custDelete" parameterType="hashmap">
+	<![CDATA[
+		DELETE  from dmc_prdt_cust
+		WHERE SEQ = #{seq}
+	]]>
+	</delete>
+	
+</mapper>

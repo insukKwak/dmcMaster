@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.MemberMapper">
+
+	<!-- 로그인유저 조회 -->
+	<!-- <select id="selectLogin" parameterType="hashmap" resultType="hashmap"> -->
+	<select id="selectLogin" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT
+			TB.USER_NO
+			, TB.USER_ID
+			, TB.USER_NM
+			, TB.USER_PW
+			, TB.USER_TYPE
+			, TB.USER_LV
+			, TB.USER_DEPT
+			, TB.USER_STATUS
+			, TB.ACCESS_IP
+			, NULL AS AGREE_YN
+		FROM
+			OUR_SYS_USER TB
+		WHERE
+			TB.USER_ID = #{user_id}
+		ORDER BY TB.USER_TYPE ASC
+	]]>	
+	</select>	
+	
+	<select id="login" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT
+		      TB.USERID
+		    , TB.USERNAME
+		    , TB.REALNAME
+		    , TB.PASSWORD
+		FROM
+		     kms_cnf_user_tb  TB
+		 WHERE
+			TB.USERNAME=#{USERNAME}
+			and TB.PASSWORD=#{PASSWORD}
+	
+	]]>	
+	</select>	
+
+</mapper>

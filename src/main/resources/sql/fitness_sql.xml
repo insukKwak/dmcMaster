@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.MyFitnessMapper">
+
+<sql id="where">
+	<![CDATA[
+		WHERE 1=1
+	]]>	
+</sql>
+
+<select id="selectMyFitness" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,USER_NO
+			,USER_NM
+			,T_CAL
+			,CAL
+			,T_TIME
+			,TIME
+			,T_STEP
+			,STEP
+			,T_DISTANCE
+			,DISTANCE
+			,CRE_NO
+			,CRE_DT
+		FROM MY_FITNESS
+	]]>
+		<include refid="where"/>
+	<![CDATA[
+		AND USER_NO = #{userId}
+		AND CRE_NO = #{creNo}
+	]]>
+</select>
+
+<select id="selectMyList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,USER_NO
+			,USER_NM
+			,T_CAL
+			,CAL
+			,T_TIME
+			,TIME
+			,T_STEP
+			,STEP
+			,T_DISTANCE
+			,DISTANCE
+			,CRE_NO
+			,CRE_DT
+		FROM MY_FITNESS
+	]]>
+		<include refid="where"/>
+	<![CDATA[
+		AND USER_NO = #{USER.USER_ID}
+	]]>
+</select>
+
+<select id="selectUserList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,USER_NO
+			,USER_NM
+			,T_CAL
+			,CAL
+			,T_TIME
+			,TIME
+			,T_STEP
+			,STEP
+			,T_DISTANCE
+			,DISTANCE
+			,CRE_NO
+			,CRE_DT
+		FROM MY_FITNESS
+	]]>
+		<include refid="where"/>
+</select>
+</mapper>

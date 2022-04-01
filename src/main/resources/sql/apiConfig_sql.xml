@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.ApiConfigMapper">
+
+	<select id="selectApiList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,APIID
+			,NAME
+			,TYPE
+		 FROM 
+		 	API_CONFIG2	
+	]]>
+	</select>
+	
+	<select id="selectApi" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT	
+			SEQ
+			,APIID
+			,NAME
+			,TYPE
+			,URL
+			,RETURNTYPE
+			,TABLENM
+			,SERVICEKEY
+			,CRE_DT
+		FROM
+			API_CONFIG2
+		WHERE APIID = #{apiId}
+	]]>
+	</select>
+	
+	<select id="selectAttrList" resultType="hashmap" parameterType="hashmap">
+		SELECT 
+			APIID
+			,PARAMID
+			,PARAMVALUE
+		FROM
+			API_CONFIG_ATTR2
+		WHERE APIID = #{apiId}
+	</select>
+	
+	<insert id="insertApi" parameterType="hashmap">
+	<selectKey keyProperty="seq" resultType="int" order="BEFORE">
+		SELECT IFNULL(MAX(SEQ)+1, 0) FROM API_CONFIG
+	</selectKey>
+	<![CDATA[
+		INSERT INTO API_CONFIG2(
+			SEQ
+			,APIID
+			,NAME
+			,TYPE
+			,SERVICEKEY
+			,URL
+			,RETURNTYPE
+			,TABLENM
+			,CRE_NO
+			,CRE_DT
+		)VALUES(
+			#{seq}
+			,#{apiId}
+			,#{name}
+			,#{type}
+			,#{serviceKey}
+			,#{url}
+			,#{returnType}
+			,#{tableNm}
+			,#{userId}
+			,now()
+		)
+	]]>
+	</insert>
+	
+	<insert id="insertAttr" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO API_CONFIG_ATTR2(
+			APIID
+			,PARAMID
+			,PARAMVALUE
+		)VALUES(
+			#{apiId}
+			,#{paramId}
+			,#{paramValue}
+		)
+	]]>
+	</insert>
+
+	<update id="updateApi" parameterType="hashmap">
+	<![CDATA[
+		UPDATE API_CONFIG2 SET
+			APIID = #{apiId},
+			NAME = #{name},
+			TYPE = #{type},
+			SERVICEKEY = #{serviceKey},
+			URL = #{url},
+			RETURNTYPE = #{returnType},
+			TABLENM = #{tableNm}
+		WHERE SEQ = #{seq}
+		
+	]]>
+	</update>
+		
+	<update id="updateAttr" parameterType="hashmap">
+	<![CDATA[
+		UPDATE API_CONFIG_ATTR2 SET
+			APIID = #{apiId}
+			,PARAMID = #{paramId}
+			,PARAMVALUE = #{paramValue}
+		WHERE SEQ = #{seq}
+	]]>
+	</update>
+	
+	<delete id="deleteApi" parameterType="hashmap">
+	<![CDATA[
+		DELETE 
+			FROM 
+		API_CONFIG2
+		WHERE APIID = #{apiId}
+	]]>
+	</delete>
+	
+	<delete id="deleteAttr" parameterType="hashmap">
+	<![CDATA[
+		DELETE 
+			FROM
+		API_CONFIG_ATTR2
+		WHERE APIID = #{apiId}
+	]]>
+	</delete>
+	
+	<select id="readTable" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT ${contId} FROM ${contTable}
+	]]>
+	</select>
+	
+	<select id="checkTable" resultType="int" parameterType="String">
+		SELECT IFNULL(COUNT(TABLE_NAME), 0) FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME=#{tableNm}
+	</select>
+	
+	<select id="createDdl" parameterType="String" >
+	<![CDATA[
+		${sql} 
+	]]>
+	</select>
+
+	<select id="insertSql" parameterType="String">
+	<![CDATA[
+		${insertSql}
+	]]> 
+	</select> 
+	
+</mapper>

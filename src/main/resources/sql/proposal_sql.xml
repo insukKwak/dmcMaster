@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.ProposalMapper">
+
+
+
+	<select id="list" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		select 
+		    subjectcode as SBJT_CODE, 
+			0 as SEQ  , 
+			title as SBJT_NAME, 
+			2022 as GRADE  , 
+			322122547488 as SEMESTER  , 
+			'register' as STATUS  
+		from (
+		    select subjectcode,title from KMU_SUBJECT_TB where lastyear=2022 and lastterm=322122547488
+		    ) a where not exists (
+		    select *  from DMC_PROPOSAL b where a.subjectcode=b.sbjt_code)
+		
+	]]>
+	
+	</select>
+	
+	<select id="costList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		select 
+		   c.*,i.title,i.classification 
+		from DMC_PRPS_PRDT_COST c,DMC_PRDT_COST_ITEM i
+		where c.PRPS_SEQ=#{seq}
+		and c.prdt_code = i.code
+   
+	]]>
+	</select>
+	
+	<select id="defList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		select 
+		    P.SBJT_CODE, 
+		    P.SEQ  , 
+		    P.SBJT_NAME, 
+		    P.GRADE  , 
+		    P.SEMESTER  , 
+		    P.STATUS ,
+		    P.REGUSER,
+		    U.REALNAME
+		from DMC_PROPOSAL  P, kms_cnf_user_tb U
+		where P.reguser = U.username
+		and P.REGUSER =#{username}
+		order by seq asc
+	]]>
+	
+	</select>
+	
+	<select id="select" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			*
+		FROM DMC_PROPOSAL
+		where  SEQ = #{seq}
+		order by seq asc
+	]]>
+	
+	</select>
+	
+	<select id="program" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			subjectcode,title,lastyear,lastterm 
+		from KMU_SUBJECT_TB where lastyear=2022 and lastterm=322122547488
+		and subjectcode = #{subjectcode}
+	]]>
+	</select>
+	
+	<select id="content" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		select
+    		title,subjecttitle,subtitle,actor,productpd,pd,approvalstatus
+		from KMU_CONTENTGROUP_TB
+		    where subjectcode= #{subjectcode}
+		    and REGISTYEAR=2022
+		    and REGISTTERM=322122547488
+		    and delflag=0
+		    order by LECTURENUMBER
+	]]>
+	
+	</select>
+	
+	<select id="contCnt" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		select
+    		count(LECTURENUMBER) as contCnt, max(productpd) as pd, max(SBJT_ESTB_SHGR) as GRADE
+		from KMU_CONTENTGROUP_TB
+		    where subjectcode= #{subjectcode}
+		    and REGISTYEAR=2022
+		    and REGISTTERM=322122547488
+		    and delflag=0
+	]]>
+	
+	</select>
+	
+	<select id="cnt" resultType="hashmap"  parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			count(seq) as cnt
+		FROM DMC_PROPOSAL
+		where  SEQ = #{seq}
+	]]>
+	
+	</select>
+
+	
+	<insert id="create" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO DMC_PROPOSAL( 
+			SEQ
+			,SBJT_CODE
+			,SBJT_NAME			
+			,GRADE
+			,YEAR
+			,SEMESTER
+			,GENERAL_PD
+			,PD1
+			,PD2
+			,START_DT
+			,END_DT
+			,STATUS
+			,ETC
+			,CREATED
+			,REGUSER
+		)VALUES(
+			PRPS_SEQ.NEXTVAL
+			,#{sbjt_code}	
+			,#{sbjt_name}
+			,#{grade}	
+			,#{year}
+			,#{semester}	
+			,#{general_pd}
+			,#{pd1}
+			,#{pd2}
+			,#{start_dt}
+			,#{end_dt}
+			,'request'
+			,#{etc}
+			,sysdate
+			,#{username}
+		)
+	]]>
+	</insert>
+	
+	<update id="update" parameterType="hashmap">
+	<![CDATA[
+		UPDATE dmc_prdt_cost_item SET
+			TITLE = #{title}
+			,RANKING_CODE =#{ranking_code}
+			,UPPER_CODE = #{upper_code}
+			,MODIFIED = sysdate
+		where CODE = #{code}
+	]]>
+	</update>
+	
+	<delete id="delete" parameterType="hashmap">
+	<![CDATA[
+		DELETE  FROM DMC_PROPOSAL
+		where  SEQ = #{seq}
+	]]>
+	</delete>
+	
+	<insert id="costCreate" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO  DMC_PRPS_PRDT_COST(
+		    SEQ   
+			,PRDT_CODE  
+			,PRPS_SEQ  
+			,PRDT_COST   
+			,CNT   
+			,RATE   
+			,AMOUNT   
+			,CREATED
+		)VALUES(
+			PRPS_PRDT_COST_SEQ.NEXTVAL
+			,#{prdt_code}	
+			,#{prps_seq}
+			,#{prdt_cost}	
+			,#{cnt}
+			,#{rate}	
+			,#{amount} 
+			,sysdate
+		)
+	]]>
+	</insert>
+	
+	<update id="costUpdate" parameterType="hashmap">
+	<![CDATA[
+		UPDATE DMC_PRPS_PRDT_COST SET
+			PRDT_COST = #{prdt_cost}
+			,CNT =#{cnt}
+			,RATE = #{rate}
+			,AMOUNT = #{amount}
+		where SEQ = #{seq}
+	]]>
+	</update>
+	
+	<delete id="costDelete" parameterType="hashmap">
+	<![CDATA[
+		DELETE  FROM DMC_PRPS_PRDT_COST
+		where  SEQ = #{seq}
+	]]>
+	</delete>
+	
+</mapper>

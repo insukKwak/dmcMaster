@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.our.project.mapper.BbsMapper">
+
+	<sql id="where">
+	<![CDATA[
+		WHERE
+			1=1
+	]]>
+		<if test="board_seq > 0">
+			AND BOARD_SEQ = #{board_seq}
+		</if>
+		<if test="board_name != null and board_name != ''">
+			AND BOARD_NAME = #{board_name}
+		</if>
+		<if test="board_name_like != null and board_name_like != ''">
+			AND BOARD_NAME LIKE #{board_name_like} ${_append} '%'
+		</if>
+	</sql>
+
+	<select id="selectNoticeList" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,TITLE
+			,CONTENT
+			,DEL_YN
+			,CRE_NO
+			,CRE_DT
+		FROM OUR_NOTICE
+	]]>
+	<include refid="where" />
+		<if test="order_by != null and order_by == 'ASC' ">
+		<![CDATA[
+			AND DEL_YN = 'N'
+			ORDER BY SEQ
+		]]>	
+		</if>
+	</select>
+
+	<select id="selectNotice" resultType="hashmap" parameterType="hashmap">
+	<![CDATA[
+		SELECT 
+			SEQ
+			,TITLE
+			,CONTENT
+			,DEL_YN
+			,CRE_NO
+			,CRE_DT
+		FROM OUR_NOTICE
+	]]>
+	<include refid="where" />
+	<![CDATA[
+		AND SEQ = #{seq}
+	]]>
+	</select>
+	
+	<insert id="insNotice" parameterType="hashmap">
+	<![CDATA[
+		INSERT INTO OUR_NOTICE( 
+			TITLE
+			,CONTENT
+			,DEL_YN
+			,CRE_NO
+			,CRE_DT
+		)VALUES(
+			#{title}
+			,#{content}
+			,'N'
+			,#{uerId}
+			,now()
+		)
+	]]>
+	</insert>
+	
+	<update id="updNotice" parameterType="hashmap">
+	<![CDATA[
+		UPDATE OUR_NOTICE SET
+			TITLE = #{title}
+			,CONTENT = #{content}
+			,MOD_NO = #{userId}
+			,MOD_DT = now()
+		WHERE SEQ = #{seq}
+	]]>
+	</update>
+	
+	<delete id="delNotice" parameterType="hashmap">
+	<![CDATA[
+		UPDATE OUR_NOTICE SET
+			DEL_YN = 'Y'
+		WHERE SEQ = #{seq}
+	]]>
+	</delete>
+</mapper>
